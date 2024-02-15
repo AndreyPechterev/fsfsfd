@@ -72,6 +72,12 @@ public class ReminderService {
         return reminderRepository.findAllByUserId(id, pageRequest);
     }
 
+    public Page<Reminder> listReminders(Integer pageNumber, Integer pageSize, String name) {
+        PageRequest pageRequest = buildPageRequestSorted(pageNumber,pageSize, null, null);
+        Long id = userService.findByUsername(name).orElseThrow().getId();
+        return reminderRepository.findAllByUserId(id,pageRequest);
+    }
+
     public Page<Reminder> filterReminder(LocalDate before,LocalDate after, Integer pageNumber,Integer pageSize, String sortBy, String orderBy, String name){
         PageRequest pageRequest = buildPageRequestSorted(pageNumber,pageSize,sortBy,orderBy);
         Long id = userService.findByUsername(name).orElseThrow().getId();
@@ -106,16 +112,13 @@ public class ReminderService {
     }
 
     public Sort buildSort(String sortBy, String orderBy) {
-        if (!isValidOrderBy(orderBy) && !isValidSortBy(sortBy)) {
-            return Sort.unsorted();
-        } else if (isValidSortBy(sortBy) && isValidOrderBy(orderBy)) {
+         if (isValidSortBy(sortBy) && isValidOrderBy(orderBy)) {
             Sort.Direction direction = orderBy.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
             return Sort.by(direction, sortBy.toLowerCase());
         } else if (isValidSortBy(sortBy)) {
             return Sort.by(sortBy.toLowerCase());
         } else {
-            Sort.Direction direction = orderBy.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-            return Sort.by(direction);
+                return Sort.unsorted();
         }
     }
 

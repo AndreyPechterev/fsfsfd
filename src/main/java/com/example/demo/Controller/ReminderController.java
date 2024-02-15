@@ -55,6 +55,13 @@ public class ReminderController {
         return reminderService.sortReminders(pageNumber, pageSize, sortBy, orderBy, principal.getName());
     }
 
+    @GetMapping("/list")
+    public Page<Reminder> listReminder(@RequestParam(required = false) Integer pageNumber,
+                                       @RequestParam(required = false) Integer pageSize,
+                                       Principal principal) {
+        return reminderService.listReminders(pageNumber, pageSize, principal.getName());
+    }
+
     @GetMapping("/filter")
     public Page<Reminder> filterReminder(@RequestParam(required = false) LocalDate before,
                                          @RequestParam(required = false) LocalDate after,
